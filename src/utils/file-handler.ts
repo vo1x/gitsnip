@@ -1,7 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import chalk from "chalk";
-import type { DownloadFolderOptions } from "../types";
+import type { DownloadFolderOptions, GitHubResponse } from "../types";
 
 export const writeFileRecursive = (filePath: string, buffer: ArrayBuffer) => {
   const dir = path.dirname(filePath);
@@ -9,28 +9,28 @@ export const writeFileRecursive = (filePath: string, buffer: ArrayBuffer) => {
   fs.writeFileSync(filePath, Buffer.from(buffer));
 };
 
-export async function downloadPath(
-  {
-    owner,
-    repo,
-    branch = "main",
-    folder,
-    out = ".",
-    token,
-  }: Partial<DownloadFolderOptions>,
-  type: "file" | "dir" = "dir"
-): Promise<void> {
+export async function downloadPath({
+  owner,
+  repo,
+  branch = "main",
+  folder,
+  out = ".",
+  token,
+}: Partial<DownloadFolderOptions>): Promise<void> {
   const api = `https://api.github.com/repos/${owner}/${repo}/contents/${folder}?ref=${branch}`;
   const headers: Record<string, string> = { "User-Agent": "gitpick" };
   if (token) headers.Authorization = `token ${token}`;
 
   const res = await fetch(api, { headers });
   if (!res.ok) throw new Error(`GitHub API error: ${res.statusText}`);
-  const items = await res.json();
+  const data = (await res.json()) as GitHubResponse;
 
-  if (type === "dir" && Array.isArray(items)) {
-    for (const item of items) {
+  if (Array.isArray(data)) {
+    for (const item of data) {
       if (item.type === "file") {
+        if (!item.download_url) {
+          throw new Error("Download URL is missing for the file.");
+        }
         const fileRes = await fetch(item.download_url, { headers });
         const fileBuf = await fileRes.arrayBuffer();
         const dest = path.join(out, item.name);
@@ -39,26 +39,26 @@ export async function downloadPath(
         console.log(chalk.green("✓"), dest);
       } else if (item.type === "dir") {
         const subDir = path.join(out, item.name);
-        await downloadPath(
-          {
-            owner,
-            repo,
-            branch,
-            folder: `${folder}/${item.name}`,
-            out: subDir,
-            token,
-          },
-          "dir"
-        );
+        await downloadPath({
+          owner,
+          repo,
+          branch,
+          folder: `${folder}/${item.name}`,
+          out: subDir,
+          token,
+        });
       }
     }
     return;
   }
 
-  if (type === "file" && items && items.type === "file") {
-    const fileRes = await fetch(items.download_url, { headers });
+  if (data && data.type === "file") {
+    if (!data.download_url) {
+      throw new Error("Download URL is missing for the file.");
+    }
+    const fileRes = await fetch(data.download_url, { headers });
     const fileBuf = await fileRes.arrayBuffer();
-    const dest = path.join(out, items.name);
+    const dest = path.join(out, data.name);
     writeFileRecursive(dest, fileBuf);
     console.log(chalk.green("✓"), dest);
     return;

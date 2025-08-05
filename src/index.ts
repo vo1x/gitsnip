@@ -17,7 +17,6 @@ async function main() {
   let options: Partial<RepoOptions> = {
     out: argv.out || ".",
     token: argv.token,
-    type: "dir",
   };
 
   const parsed = repoArg
@@ -30,7 +29,6 @@ async function main() {
       ...parsed,
       out: argv.out || (parsed.folder ? parsed.folder.split("/").pop() : "."),
       branch: argv.branch || parsed.branch || "main",
-      type: parsed.type as "dir" | "file" | undefined,
     };
   } else if (repoArg && folderArg) {
     const [owner, repo] = repoArg.split("/");
@@ -52,16 +50,10 @@ async function main() {
   }
 
   try {
-    if (parsed?.type === "file") {
-      Logger.info(
-        `Downloading file "${options.folder}" from ${options.owner}/${options.repo} (branch: ${options.branch})...`
-      );
-    } else {
-      Logger.info(
-        `Downloading folder "${options.folder}" from ${options.owner}/${options.repo} (branch: ${options.branch})...`
-      );
-    }
-    await downloadPath(options as RepoOptions, parsed?.type as "file" | "dir");
+    Logger.info(
+      `Cloning "${options.folder}" from ${options.owner}/${options.repo} (branch: ${options.branch})...`
+    );
+    await downloadPath(options as RepoOptions);
     Logger.success("\nDone!");
   } catch (err: any) {
     Logger.error(err?.message || String(err));
