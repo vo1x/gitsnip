@@ -5,4 +5,5 @@ export interface DownloadFolderOptions {
   folder: string;
   out?: string;
   token?: string;
+  type: "file" | "dir";
 }

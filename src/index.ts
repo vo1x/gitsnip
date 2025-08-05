@@ -2,7 +2,7 @@
 
 import minimist from "minimist";
 import { parseGithubUrl } from "./utils/parser";
-import { downloadFolder } from "./utils/file-handler";
+import { downloadPath } from "./utils/file-handler";
 import type { DownloadFolderOptions as RepoOptions } from "./types";
 import { Logger } from "./messages";
 
@@ -17,15 +17,20 @@ async function main() {
   let options: Partial<RepoOptions> = {
     out: argv.out || ".",
     token: argv.token,
+    type: "dir",
   };
 
-  const parsed = repoArg ? parseGithubUrl(repoArg) : null;
+  const parsed = repoArg
+    ? (parseGithubUrl(repoArg) as Partial<RepoOptions> | null)
+    : null;
 
   if (parsed) {
     options = {
       ...options,
       ...parsed,
+      out: argv.out || (parsed.folder ? parsed.folder.split("/").pop() : "."),
       branch: argv.branch || parsed.branch || "main",
+      type: parsed.type as "dir" | "file" | undefined,
     };
   } else if (repoArg && folderArg) {
     const [owner, repo] = repoArg.split("/");
@@ -47,10 +52,16 @@ async function main() {
   }
 
   try {
-    Logger.info(
-      `Downloading folder "${options.folder}" from ${options.owner}/${options.repo} (branch: ${options.branch})...`
-    );
-    await downloadFolder(options as RepoOptions);
+    if (parsed?.type === "file") {
+      Logger.info(
+        `Downloading file "${options.folder}" from ${options.owner}/${options.repo} (branch: ${options.branch})...`
+      );
+    } else {
+      Logger.info(
+        `Downloading folder "${options.folder}" from ${options.owner}/${options.repo} (branch: ${options.branch})...`
+      );
+    }
+    await downloadPath(options as RepoOptions, parsed?.type as "file" | "dir");
     Logger.success("\nDone!");
   } catch (err: any) {
     Logger.error(err?.message || String(err));
