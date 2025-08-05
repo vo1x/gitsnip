@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import minimist from "minimist";
 import { parseGithubUrl } from "./utils/parser";
