@@ -1,34 +1,43 @@
-ghpick
-======
+# ghpick
 
 Download any file, folder, or whole repo from GitHub—without git.
 
 ---
-Usage
------
 
-# Clone a full repo (no .git folder)
+## Usage
+
+**Clone a full repo (no .git folder):**
+```
 npx ghpick owner/repo
 npx ghpick https://github.com/owner/repo
+```
 
-# Download a folder
+**Download a folder:**
+```
 npx ghpick owner/repo/tree/main/path/to/folder
 npx ghpick https://github.com/owner/repo/tree/main/path/to/folder
+```
 
-# Download a file
+**Download a file:**
+```
 npx ghpick owner/repo/blob/main/path/to/file
 npx ghpick https://github.com/owner/repo/blob/main/path/to/file
+```
 
-# Specify branch or commit SHA
+**Specify branch or commit SHA:**
+```
 npx ghpick owner/repo -b dev
 npx ghpick owner/repo -b 1234abcd
+```
 
-# Private repos (requires GitHub token)
+**Private repos (requires GitHub token):**
+```
 npx ghpick owner/repo --token <your_github_token>
+```
 
 ---
-Features
---------
+
+## Features
 
 - Download a whole repo, any folder, or single file from GitHub
 - Supports branches and commit SHAs
@@ -37,8 +46,8 @@ Features
 - Skips and warns about symlinks/submodules
 
 ---
-To-Do
------
+
+## To-Do
 
 - [ ] Support downloading symlinks
 - [ ] Support cloning submodules (optionally)
@@ -48,9 +57,7 @@ To-Do
 - [ ] Add Windows path compatibility checks
 
 ---
-License
--------
+
+## License
 
 MIT
-
----
