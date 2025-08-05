@@ -44,7 +44,7 @@ async function main() {
     process.exit(1);
   }
 
-  if (!options.owner || !options.repo || !options.folder) {
+  if (!options.owner || !options.repo || options.folder === undefined) {
     Logger.usage();
     process.exit(1);
   }
