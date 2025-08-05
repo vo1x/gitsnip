@@ -1,3 +1,9 @@
+> ⚠️ **Warning: This package is under active development and not yet production-ready.**
+>
+> Features and CLI usage may change at any time. Expect bugs, breaking changes, and incomplete features.
+>
+> **Use at your own risk.**
+
 # ghpick
 
 Download any file, folder, or whole repo from GitHub—without git.
