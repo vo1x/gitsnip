@@ -4,41 +4,41 @@
 >
 > **Use at your own risk.**
 
-# ghpick
+# gitsnip
 
 Download any file, folder, or whole repo from GitHub—without git.
 
 ---
 
-## Usage
+## Usage 
 
 **Clone a full repo (no .git folder):**
 ```
-npx ghpick owner/repo
-npx ghpick https://github.com/owner/repo
+npx gitsnip owner/repo
+npx gitsnip https://github.com/owner/repo
 ```
 
 **Download a folder:**
 ```
-npx ghpick owner/repo/tree/main/path/to/folder
-npx ghpick https://github.com/owner/repo/tree/main/path/to/folder
+npx gitsnip owner/repo/tree/main/path/to/folder
+npx gitsnip https://github.com/owner/repo/tree/main/path/to/folder
 ```
 
 **Download a file:**
 ```
-npx ghpick owner/repo/blob/main/path/to/file
-npx ghpick https://github.com/owner/repo/blob/main/path/to/file
+npx gitsnip owner/repo/blob/main/path/to/file
+npx gitsnip https://github.com/owner/repo/blob/main/path/to/file
 ```
 
 **Specify branch or commit SHA:**
 ```
-npx ghpick owner/repo -b dev
-npx ghpick owner/repo -b 1234abcd
+npx gitsnip owner/repo -b dev
+npx gitsnip owner/repo -b 1234abcd
 ```
 
 **Private repos (requires GitHub token):**
 ```
-npx ghpick owner/repo --token <your_github_token>
+npx gitsnip owner/repo --token <your_github_token>
 ```
 
 ---
