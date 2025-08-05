@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Download a folder from any GitHub repo (Bun/TS CLI).",
   "bin": {
-    "ghpick": "src/index.ts"
+    "ghpick": "dist/index.js"
   },
   "type": "module",
   "scripts": {
