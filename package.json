@@ -1,6 +1,6 @@
 {
   "name": "gitsnip",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Download any file, folder, or whole repo from GitHub—without git.",
   "bin": {
     "gitsnip": "dist/index.js"
@@ -29,7 +29,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/vo1x/gitsnip.git"
+    "url": "git+https://github.com/vo1x/gitsnip.git"
   },
   "keywords": [
     "git",

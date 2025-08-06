@@ -2,11 +2,34 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import chalk from "chalk";
 import type { DownloadFolderOptions, GitHubResponse } from "../types";
+import { Logger } from "./messages";
 
 export const writeFileRecursive = (filePath: string, buffer: ArrayBuffer) => {
   const dir = path.dirname(filePath);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(filePath, Buffer.from(buffer));
+};
+
+export const parseoutputDirputDirectory = (
+  fileName: string,
+  outputDir: string
+): string | null => {
+  if (!fileName || !outputDir) return null;
+
+  let dest: string;
+
+  if (outputDir === "." || outputDir === "./") {
+    dest = path.join(process.cwd(), fileName);
+  } else if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+    dest = path.join(outputDir, fileName);
+  } else if (fs.lstatSync(outputDir).isDirectory()) {
+    dest = path.join(outputDir, fileName);
+  } else {
+    dest = outputDir;
+  }
+
+  return dest;
 };
 
 export async function downloadPath({
@@ -24,6 +47,8 @@ export async function downloadPath({
   const res = await fetch(api, { headers });
   if (!res.ok) throw new Error(`GitHub API error: ${res.statusText}`);
   const data = (await res.json()) as GitHubResponse;
+
+  console.log(data);
 
   if (Array.isArray(data)) {
     for (const item of data) {
@@ -58,7 +83,13 @@ export async function downloadPath({
     }
     const fileRes = await fetch(data.download_url, { headers });
     const fileBuf = await fileRes.arrayBuffer();
-    const dest = path.join(out, data.name);
+    const dest: string | null = parseoutputDirputDirectory(data.name, out);
+
+    if (!dest) {
+      Logger.error("Output path could not be resolved.");
+      return;
+    }
+
     writeFileRecursive(dest, fileBuf);
     console.log(chalk.green("✓"), dest);
     return;
