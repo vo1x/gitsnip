@@ -1,6 +1,6 @@
 {
   "name": "gitsnip",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Download any file, folder, or whole repo from GitHub—without git.",
   "bin": {
     "gitsnip": "dist/index.js"

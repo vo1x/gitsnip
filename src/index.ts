@@ -7,7 +7,7 @@ import type { DownloadFolderOptions as RepoOptions } from "./types";
 import { Logger } from "./utils/messages";
 
 async function main() {
-  const argv = minimist(Bun.argv.slice(2), {
+  const argv = minimist(process.argv.slice(2), {
     string: ["out", "branch", "token"],
     alias: { o: "out", b: "branch", t: "token" },
   });
