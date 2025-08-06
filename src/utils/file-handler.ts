@@ -10,7 +10,7 @@ export const writeFileRecursive = (filePath: string, buffer: ArrayBuffer) => {
   fs.writeFileSync(filePath, Buffer.from(buffer));
 };
 
-export const parseoutputDirputDirectory = (
+export const parseOutputDir = (
   fileName: string,
   outputDir: string
 ): string | null => {
@@ -83,7 +83,7 @@ export async function downloadPath({
     }
     const fileRes = await fetch(data.download_url, { headers });
     const fileBuf = await fileRes.arrayBuffer();
-    const dest: string | null = parseoutputDirputDirectory(data.name, out);
+    const dest: string | null = parseOutputDir(data.name, out);
 
     if (!dest) {
       Logger.error("Output path could not be resolved.");
