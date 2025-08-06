@@ -1,44 +1,63 @@
 {
   "name": "gitsnip",
   "version": "0.1.3",
-  "description": "Download any file, folder, or whole repo from GitHub—without git.",
-  "bin": {
-    "gitsnip": "dist/index.js"
-  },
+  "description": "Download any file, folder, or whole repo from GitHub—without git",
   "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "gitsnip": "dist/cli/index.js"
+  },
   "files": [
-    "dist"
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts",
-    "dev": "bun run src/index.ts",
-    "prepublishOnly": "bun run build",
-    "test": "echo \"No tests yet\""
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
+    "dev": "tsx src/cli/index.ts",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts --fix",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build && npm test"
   },
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "minimist": "^1.2.8"
-  },
-  "devDependencies": {
-    "@types/minimist": "^1.2.5",
-    "@types/node": "^20.4.2",
-    "tsup": "^8.5.0",
-    "typescript": "^5.1.3"
-  },
-  "author": "me@volx.dev",
+  "keywords": [
+    "github",
+    "cli",
+    "download",
+    "git",
+    "typescript"
+  ],
+  "author": "volx",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vo1x/gitsnip.git"
   },
-  "keywords": [
-    "git",
-    "github",
-    "cli",
-    "typescript",
-    "folder",
-    "download",
-    "repository",
-    "tool"
-  ]
+  "homepage": "https://github.com/vo1x/gitsnip#readme",
+  "bugs": {
+    "url": "https://github.com/vo1x/gitsnip/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "prettier": "^3.1.1",
+    "vitest": "^1.2.0",
+    "rimraf": "^5.0.5"
+  }
 }

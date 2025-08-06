@@ -1,0 +1,12 @@
+src/
+tests/
+coverage/
+.github/
+.vscode/
+.eslintrc.js
+.prettierrc
+tsconfig.json
+tsconfig.build.json
+vitest.config.ts
+*.log
+.env
