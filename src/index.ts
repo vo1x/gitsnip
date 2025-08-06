@@ -4,7 +4,7 @@ import minimist from "minimist";
 import { parseGithubUrl } from "./utils/parser";
 import { downloadPath } from "./utils/file-handler";
 import type { DownloadFolderOptions as RepoOptions } from "./types";
-import { Logger } from "./messages";
+import { Logger } from "./utils/messages";
 
 async function main() {
   const argv = minimist(Bun.argv.slice(2), {

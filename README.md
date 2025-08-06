@@ -55,6 +55,7 @@ npx gitsnip owner/repo --token <your_github_token>
 
 ## To-Do
 
+- [ ] Tests using jest or mocha
 - [ ] Support downloading symlinks
 - [ ] Support cloning submodules (optionally)
 - [ ] Add progress bar / spinner
