@@ -6,65 +6,100 @@
 
 # gitsnip
 
-Download any file, folder, or whole repo from GitHub—without git.
+**Download any file, folder, or entire repo from GitHub—without git.**
+
+[![npm version](https://img.shields.io/npm/v/gitsnip?color=green)](https://www.npmjs.com/package/gitsnip)
+[![MIT License](https://img.shields.io/github/license/vo1x/gitsnip)](LICENSE)
 
 ---
 
-## Usage 
+## 🚀 Quick Start
 
-**Clone a full repo (no .git folder):**
-```
-npx gitsnip owner/repo
-npx gitsnip https://github.com/owner/repo
-```
+> **You do not need git or GitHub CLI—just Node.js 18+ and npx.**
 
-**Download a folder:**
-```
-npx gitsnip owner/repo/tree/main/path/to/folder
-npx gitsnip https://github.com/owner/repo/tree/main/path/to/folder
-```
+### Clone a full repo (no .git folder):
 
-**Download a file:**
-```
-npx gitsnip owner/repo/blob/main/path/to/file
-npx gitsnip https://github.com/owner/repo/blob/main/path/to/file
-```
+    npx gitsnip owner/repo
+    npx gitsnip https://github.com/owner/repo
 
-**Specify branch or commit SHA:**
-```
-npx gitsnip owner/repo -b dev
-npx gitsnip owner/repo -b 1234abcd
-```
+### Download a folder:
 
-**Private repos (requires GitHub token):**
-```
-npx gitsnip owner/repo --token <your_github_token>
-```
+    npx gitsnip owner/repo/tree/main/path/to/folder
+    npx gitsnip https://github.com/owner/repo/tree/main/path/to/folder
+
+### Download a file:
+
+    npx gitsnip owner/repo/blob/main/path/to/file
+    npx gitsnip https://github.com/owner/repo/blob/main/path/to/file
+
+### Specify branch or commit SHA:
+
+    npx gitsnip owner/repo -b dev
+    npx gitsnip owner/repo -b 1234abcd
+
+### Download from private repos (with token):
+
+    npx gitsnip owner/repo --token <your_github_token>
 
 ---
 
-## Features
+## 🛠️ Options
 
-- Download a whole repo, any folder, or single file from GitHub
+| Option             | Shorthand   | Description                               |
+|--------------------|-------------|-------------------------------------------|
+| `-o, --out`        |             | Output directory (default: .)             |
+| `-b, --branch`     |             | Branch or commit SHA (default: main)      |
+| `-t, --token`      |             | GitHub token for private repos            |
+| `--dry-run`        |             | Show what would be downloaded             |
+| `--force`          |             | Overwrite existing files without prompting|
+
+---
+
+## ✨ Features
+
+- Download any public or private file, folder, or repo from GitHub
 - Supports branches and commit SHAs
-- Supports public and private repos (with token)
-- Outputs a regular folder—no git history, no .git folder
-- Skips and warns about symlinks/submodules
+- No git history—just files and folders
+- Works without git or GitHub CLI
+- Handles most GitHub URLs and short forms
+- Overwrite prompt for existing files (`--force` skips prompt)
 
 ---
 
-## To-Do
+## 🔥 Examples
 
-- [ ] Tests using jest or mocha
+    # Download a public repo as a folder (no .git)
+    npx gitsnip vercel/next.js
+
+    # Download a folder only
+    npx gitsnip vercel/next.js/tree/canary/packages/next
+
+    # Download a single file
+    npx gitsnip vercel/next.js/blob/canary/packages/next/package.json
+
+    # Use a GitHub token for a private repo
+    npx gitsnip owner/private-repo --token ghp_xxxxxxx
+
+    # Specify output directory
+    npx gitsnip vercel/next.js -o my-folder
+
+---
+
+## ⚡️ To-Do
+
+- [ ] Add tests
 - [ ] Support downloading symlinks
 - [ ] Support cloning submodules (optionally)
-- [ ] Add progress bar / spinner
 - [ ] Add archive (zip/tar) output option
 - [ ] Improve error messages for rate-limited or large repos
 - [ ] Add Windows path compatibility checks
 
 ---
 
-## License
+## 📄 License
 
 MIT
+
+---
+
+**Enjoy using `gitsnip`? Star this repo! [⭐](https://github.com/vo1x/gitsnip)**

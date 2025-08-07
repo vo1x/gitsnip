@@ -8,7 +8,7 @@ export const downloadCommand = new Command('download')
   .description('Download files or folders from GitHub')
   .argument('<repo>', 'GitHub repository (owner/repo or full URL)')
   .argument('[folder]', 'Folder/file path to download (optional if URL includes path)')
-  .option('-o, --out <dir>', 'Output directory', '.')
+  .option('-o, --out <dir>', 'Output directory')
   .option('-b, --branch <branch>', 'Branch name', 'main')
   .option('-t, --token <token>', 'GitHub token for private repos')
   .option('--dry-run', 'Show what would be downloaded without downloading')
@@ -19,10 +19,11 @@ export const downloadCommand = new Command('download')
       try {
         const parsed = parseGithubUrl(repoArg);
         let outputDir = options.out;
-        if (outputDir === '.' && !options.out) {
-          if (parsed.folder) {
-            const isBlob = parsed.type === 'blob' || repoArg.includes('/blob/');
-            outputDir = isBlob ? '.' : parsed.folder.split('/').pop() || '.';
+        if (!outputDir) {
+          if (parsed.type === 'blob' || repoArg.includes('/blob/')) {
+            outputDir = '.';
+          } else if (parsed.folder) {
+            outputDir = parsed.folder.split('/').pop() || parsed.repo;
           } else {
             outputDir = parsed.repo;
           }
