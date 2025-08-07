@@ -1,88 +1,58 @@
 import { Command } from 'commander';
-import { parseGithubUrl } from '../../lib/github/parser.js';
-import { downloadPath } from '../../lib/downloader/index.js';
-import type { DownloadOptions } from '../../types/index.js';
-import { info, success, error } from '../../lib/utils/logger.js';
+import ora from 'ora';
+import { parseGithubUrl } from '../../lib/parser.js';
+import { downloadAndExtractTarball } from '../../lib/tarball.js';
+import { info, success, error } from '../../lib/logger.js';
 
 export const downloadCommand = new Command('download')
-  .description('Download files or folders from GitHub')
+  .description('Download files or folders from GitHub via tarball')
   .argument('<repo>', 'GitHub repository (owner/repo or full URL)')
   .argument('[folder]', 'Folder/file path to download (optional if URL includes path)')
   .option('-o, --out <dir>', 'Output directory')
   .option('-b, --branch <branch>', 'Branch name', 'main')
   .option('-t, --token <token>', 'GitHub token for private repos')
-  .option('--dry-run', 'Show what would be downloaded without downloading')
-  .option('--force', 'Overwrite existing files without prompting')
   .action(async (repoArg: string, folderArg: string | undefined, options) => {
     try {
-      let downloadOptions: DownloadOptions;
+      let parsed;
       try {
-        const parsed = parseGithubUrl(repoArg);
-        let outputDir = options.out;
-        if (!outputDir) {
-          if (parsed.type === 'blob' || repoArg.includes('/blob/')) {
-            outputDir = '.';
-          } else if (parsed.folder) {
-            outputDir = parsed.folder.split('/').pop() || parsed.repo;
-          } else {
-            outputDir = parsed.repo;
-          }
-        }
+        parsed = parseGithubUrl(repoArg);
+      } catch (e) {
+        error('Invalid GitHub repository format. Use: owner/repo or full GitHub URL');
+        process.exit(1);
+      }
 
-        downloadOptions = {
-          ...parsed,
-          out: outputDir,
-          branch: options.branch || parsed.branch || 'main',
-          token: options.token,
-          force: options.force,
-          dryRun: options.dryRun,
-        };
-
-        if (folderArg) {
-          downloadOptions.folder = folderArg;
-        }
-      } catch (parseError) {
-        if (repoArg.includes('/') && folderArg) {
-          const [owner, repo] = repoArg.split('/');
-          downloadOptions = {
-            owner,
-            repo,
-            folder: folderArg,
-            branch: options.branch || 'main',
-            out: options.out,
-            token: options.token,
-            force: options.force,
-            dryRun: options.dryRun,
-          };
+      let outputDir = options.out;
+      if (!outputDir) {
+        if (parsed.type === 'blob' || repoArg.includes('/blob/')) {
+          outputDir = '.';
+        } else if (parsed.folder) {
+          outputDir = parsed.folder.split('/').pop() || parsed.repo;
         } else {
-          throw new Error('Invalid GitHub repository format. Use: owner/repo or full GitHub URL');
+          outputDir = parsed.repo;
         }
       }
 
-      if (!downloadOptions.owner || !downloadOptions.repo || downloadOptions.folder === undefined) {
-        throw new Error('Could not parse repository information');
-      }
+      let extractPath = parsed.folder;
+      if (folderArg) extractPath = folderArg;
 
-      const targetPath = downloadOptions.folder || '(entire repository)';
-      info(`Repository: ${downloadOptions.owner}/${downloadOptions.repo}`);
-      info(`Branch: ${downloadOptions.branch}`);
-      info(`Path: ${targetPath}`);
-      info(`Output: ${downloadOptions.out}`);
+      info(`Repository: ${parsed.owner}/${parsed.repo}`);
+      info(`Branch: ${options.branch || parsed.branch || 'main'}`);
+      info(`Path: ${extractPath || '(entire repository)'}`);
+      info(`Output: ${outputDir}`);
 
-      if (options.dryRun) {
-        info('Running in dry-run mode...');
-      }
+      const spinner = ora('Downloading tarball from GitHub...').start();
 
-      const stats = await downloadPath(downloadOptions);
+      await downloadAndExtractTarball({
+        owner: parsed.owner,
+        repo: parsed.repo,
+        ref: options.branch || parsed.branch || 'main',
+        outDir: outputDir,
+        filterPath: extractPath,
+        token: options.token,
+      });
 
-      success(`\nDownload completed! 🎉`);
-      success(`Files downloaded: ${stats.downloadedFiles}`);
-      if (stats.skippedFiles > 0) {
-        info(`Files skipped: ${stats.skippedFiles}`);
-      }
-      if (stats.errors > 0) {
-        error(`Errors encountered: ${stats.errors}`);
-      }
+      spinner.succeed('Download and extraction complete! 🎉');
+      success(`Done: Files saved to "${outputDir}"`);
     } catch (err) {
       error(err instanceof Error ? err.message : String(err));
       process.exit(1);
