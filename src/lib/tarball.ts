@@ -1,7 +1,7 @@
 import * as tar from 'tar';
 import { pipeline } from 'node:stream/promises';
 import fs from 'node:fs';
-import path from 'node:path';
+import { verifyOutputDir } from './fs';
 
 export async function downloadAndExtractTarball({
   owner,
@@ -10,6 +10,7 @@ export async function downloadAndExtractTarball({
   outDir = '.',
   filterPath = '',
   token,
+  force = false,
 }: {
   owner: string;
   repo: string;
@@ -17,7 +18,9 @@ export async function downloadAndExtractTarball({
   outDir?: string;
   filterPath?: string;
   token?: string;
+  force?: boolean;
 }) {
+
   const tarballUrl = `https://github.com/${owner}/${repo}/archive/${ref}.tar.gz`;
   const prefix = `${repo}-${ref.replace(/\//g, '-')}`;
 

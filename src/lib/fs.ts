@@ -2,6 +2,33 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { createFileSystemError } from './errors.js';
 import { confirm } from '@clack/prompts';
+import { DownloadOptions, ParsedUrl } from '../types/index.js';
+
+import { info } from './logger.js';
+
+export async function verifyOutputDir(outDir: string, force = false): Promise<boolean> {
+  try {
+    const absOutDir = path.resolve(outDir);
+
+    await fs.promises.mkdir(absOutDir, { recursive: true });
+
+    const files = await fs.promises.readdir(absOutDir);
+    if (files.length === 0) return true;
+
+    if (force) {
+      info(`--force flag used. Overwriting contents of "${absOutDir}".`);
+      return true;
+    }
+
+    const response = await confirm({
+      message: `Directory "${absOutDir}" is not empty. Overwrite its contents?`,
+      initialValue: false,
+    });
+    return response === true;
+  } catch (err) {
+    return false;
+  }
+}
 
 export async function ensureDirectory(dirPath: string): Promise<void> {
   try {
@@ -49,12 +76,16 @@ export async function confirmOverwrite(filePath: string, force = false): Promise
   return result === true;
 }
 
-export function resolveOutputPath(fileName: string, outputDir: string): string {
-  if (outputDir === '.' || outputDir === './') {
-    return path.join(process.cwd(), fileName);
+export function resolveOutputPath(
+  parsed: ParsedUrl,
+  options: DownloadOptions,
+  repoArg: string
+): string {
+  if (options.out) return path.resolve(process.cwd(), options.out);
+
+  if (parsed.type === 'blob' || repoArg.includes('/blob/')) {
+    return path.resolve(process.cwd(), '.');
   }
-  if (path.isAbsolute(outputDir)) {
-    return path.join(outputDir, fileName);
-  }
-  return path.join(process.cwd(), outputDir, fileName);
+
+  return path.resolve(process.cwd(), parsed.repo);
 }
