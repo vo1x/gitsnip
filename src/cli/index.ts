@@ -9,8 +9,10 @@ import { verifyOutputTarget } from '../lib/fs.js';
 import { resolveOutputPath } from '../lib/fs.js';
 import path from 'node:path';
 
-const program = new Command();
+import { zipDirectory } from '../lib/zip.js';
+import { rimraf } from 'rimraf';
 
+const program = new Command();
 program
   .name('gitsnip')
   .description('Download any file, folder, or whole repo from GitHub—without git')
@@ -21,6 +23,7 @@ program
   .option('-b, --branch <branch>', 'Branch name', 'main')
   .option('-t, --token <token>', 'GitHub token for private repos')
   .option('--force', 'Overwrite existing files without prompting')
+  .option('-z, --zip', 'Export the result as a .zip archive')
   .action(async (repoArg: string, folderArg: string | undefined, options) => {
     try {
       let parsed;
@@ -67,6 +70,16 @@ program
 
       spinner.succeed('Download and extraction complete! 🎉');
       success(`Done: Files saved to "${outputDir}"`);
+
+      if (options.zip) {
+        const outputDirName = path.basename(outputDir);
+        const outputParentDir = path.dirname(outputDir);
+        const zipFilePath = path.join(outputParentDir, `${outputDirName}.zip`);
+        await zipDirectory(outputDir, zipFilePath);
+        success(`Created zip archive: ${zipFilePath}`);
+        await rimraf(outputDir);
+        success(`Removed temporary folder: ${outputDir}`);
+      }
     } catch (err) {
       error(err instanceof Error ? err.message : String(err));
       process.exit(1);
