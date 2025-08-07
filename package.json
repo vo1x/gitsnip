@@ -1,6 +1,6 @@
 {
   "name": "gitsnip",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "Download any file, folder, or whole repo from GitHub—without git",
   "type": "module",
   "main": "dist/index.js",
@@ -46,6 +46,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@clack/prompts": "^0.11.0",
     "chalk": "^5.3.0",
     "commander": "^12.0.0",
     "ora": "^8.0.1",
@@ -53,13 +54,13 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
-    "tsx": "^4.7.0",
-    "typescript": "^5.3.3",
-    "eslint": "^8.56.0",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
+    "eslint": "^8.56.0",
     "prettier": "^3.1.1",
-    "vitest": "^1.2.0",
-    "rimraf": "^5.0.5"
+    "rimraf": "^5.0.5",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
   }
 }
