@@ -1,7 +1,6 @@
 import * as tar from 'tar';
 import { pipeline } from 'node:stream/promises';
 import fs from 'node:fs';
-import { verifyOutputDir } from './fs';
 
 export async function downloadAndExtractTarball({
   owner,
