@@ -1,6 +1,7 @@
 import * as tar from 'tar';
 import { pipeline } from 'node:stream/promises';
 import fs from 'node:fs';
+import { Readable } from 'node:stream';
 
 export async function downloadAndExtractTarball({
   owner,
@@ -19,7 +20,6 @@ export async function downloadAndExtractTarball({
   token?: string;
   force?: boolean;
 }) {
-
   const tarballUrl = `https://github.com/${owner}/${repo}/archive/${ref}.tar.gz`;
   const prefix = `${repo}-${ref.replace(/\//g, '-')}`;
 
@@ -32,10 +32,12 @@ export async function downloadAndExtractTarball({
     throw new Error(`Failed to download tarball: ${res.status} ${res.statusText}`);
   }
 
+  const nodeStream = Readable.fromWeb(res.body as any);
+
   await fs.promises.mkdir(outDir, { recursive: true });
 
   await pipeline(
-    res.body as any,
+    nodeStream,
     tar.x({
       cwd: outDir,
       strip: 1,

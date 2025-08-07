@@ -9,7 +9,7 @@ import { info } from './logger.js';
 export async function verifyOutputTarget(
   outPath: string,
   force = false,
-  fileName?: string 
+  fileName?: string
 ): Promise<boolean> {
   try {
     const absPath = path.resolve(outPath);
@@ -18,7 +18,7 @@ export async function verifyOutputTarget(
       await fs.promises.mkdir(absPath, { recursive: true });
       const filePath = path.join(absPath, fileName);
       const fileExists = fs.existsSync(filePath);
-      
+
       if (!fileExists) return true;
 
       if (force) {
@@ -35,7 +35,7 @@ export async function verifyOutputTarget(
 
     if (fs.existsSync(absPath)) {
       const stat = await fs.promises.stat(absPath);
-      
+
       if (stat.isFile()) {
         if (force) {
           info(`--force flag used. Overwriting file "${absPath}".`);
@@ -48,7 +48,7 @@ export async function verifyOutputTarget(
         });
         return response === true;
       }
-      
+
       if (stat.isDirectory()) {
         const files = await fs.promises.readdir(absPath);
         if (files.length === 0) return true;
@@ -68,7 +68,6 @@ export async function verifyOutputTarget(
 
     await fs.promises.mkdir(absPath, { recursive: true });
     return true;
-
   } catch (err) {
     throw createFileSystemError(`Failed to verify output target: ${outPath}`, outPath);
   }
@@ -86,4 +85,14 @@ export function resolveOutputPath(
   }
 
   return path.resolve(process.cwd(), parsed.repo);
+}
+
+export async function createTmpDir(outputDir: string) {
+  const tmpDirPath = path.join(outputDir, 'tmp');
+  try {
+    await fs.promises.mkdir(tmpDirPath, { recursive: true });
+    return { tmpDirPath };
+  } catch (err) {
+    throw new Error('Unable to create temp directory: ' + (err as Error).message);
+  }
 }
