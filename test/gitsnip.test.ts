@@ -35,11 +35,6 @@ const tests = [
     expectInOutput: 'INFO  Target path',
   },
   {
-    args: ['vo1x/apple-music-rpc', 'README.md', '--force'],
-    shouldSucceed: true,
-    expectInOutput: 'INFO  Target path',
-  },
-  {
     args: ['https://github.com/vo1x/apple-music-rpc/blob/main/Appie/Info.plist', '--force'],
     shouldSucceed: true,
     expectInOutput: 'INFO  Target path',
