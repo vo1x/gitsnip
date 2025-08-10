@@ -3,7 +3,7 @@
 import { Command } from 'commander';
 import ora from 'ora';
 import path from 'node:path';
-import { rimraf } from 'rimraf';
+import * as rimraf from 'rimraf';
 
 import { parseGithubUrl } from '../lib/parser.js';
 import { downloadAndExtractTarball } from '../lib/extract.js';
