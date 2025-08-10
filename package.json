@@ -1,6 +1,6 @@
 {
   "name": "gitsnip",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "Download any file, folder, or whole repo from GitHub—without git",
   "type": "module",
   "main": "dist/index.js",
@@ -50,12 +50,10 @@
     "chalk": "^5.3.0",
     "commander": "^12.0.0",
     "ora": "^8.0.1",
-    "tar": "^7.4.3",
-    "yazl": "^3.3.1"
+    "tar": "^7.4.3"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
-    "@types/yazl": "^3.3.0",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
     "eslint": "^8.56.0",
