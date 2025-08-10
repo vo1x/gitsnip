@@ -12,7 +12,7 @@ export function info(msg: string): void {
   console.log(label('INFO', chalk.bgCyanBright), msg);
 }
 
-export function success(msg: string): void {
+export function _success(msg: string): void {
   stopSpinner();
   console.log(label('SUCCESS', chalk.bgGreenBright), msg);
 }

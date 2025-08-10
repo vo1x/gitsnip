@@ -36,6 +36,7 @@ function matchRepoUrl(input: string): ParsedUrl | null {
     owner: match[1],
     repo: match[2],
     folder: '',
+    type: 'repo',
   };
 }
 
@@ -46,6 +47,7 @@ function matchShortForm(input: string): ParsedUrl | null {
       owner: parts[0],
       repo: parts[1],
       folder: '',
+      type: 'repo',
     };
   }
   if (parts.length > 2) {
@@ -53,6 +55,7 @@ function matchShortForm(input: string): ParsedUrl | null {
       owner: parts[0],
       repo: parts[1],
       folder: parts.slice(2).join('/'),
+      type: 'tree',
     };
   }
   return null;

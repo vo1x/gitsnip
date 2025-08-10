@@ -50,7 +50,6 @@
 | `-o, --out`        |             | Output directory (default: .)             |
 | `-b, --branch`     |             | Branch or commit SHA (default: main)      |
 | `-t, --token`      |             | GitHub token for private repos            |
-| `--dry-run`        |             | Show what would be downloaded             |
 | `--force`          |             | Overwrite existing files without prompting|
 
 ---
