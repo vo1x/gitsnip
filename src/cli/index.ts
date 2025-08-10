@@ -12,12 +12,14 @@ import { helpText } from '../constants/help-text.js';
 import { isPathExists, nextAvailableDirName, nextAvailableFileName } from '../lib/naming.js';
 import { askOverwrite } from '../lib/ui.js';
 
+import { version } from '../../package.json' assert { type: 'json' };
+
 const program = new Command();
 
 program
   .name('gitsnip')
   .description('Download any file, folder, or whole repo from GitHub—without git')
-  .version('0.4.0', '-v, --version', 'output the current version')
+  .version(version, '-v, --version', 'output the current version')
   .argument('<repo>', 'GitHub repository (owner/repo or full URL)')
   .argument('[folder]', 'Folder/file path to download (optional if URL includes path)')
   .option('-o, --out <dir>', 'Output directory', './')
