@@ -6,7 +6,7 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 
 import { parseGithubUrl } from '../lib/parser.js';
-import { downloadAndExtractTarball } from '../lib/extract.js';
+import { downloadGitHubContent } from '../lib/download-action.js';
 import { info, _success, error } from '../lib/logger.js';
 import { helpText } from '../constants/help-text.js';
 import { isPathExists, nextAvailableDirName, nextAvailableFileName } from '../lib/naming.js';
@@ -55,7 +55,9 @@ program
           const parentDir = path.dirname(finalOutputPath);
           const baseName = path.basename(finalOutputPath);
 
-          const isFile = parsed.type === 'blob' || (parsed.folder && !parsed.folder.includes('/'));
+          const isFile =
+            parsed.type === 'blob' ||
+            (requestedPath && !requestedPath.endsWith('/') && !requestedPath.includes('/'));
 
           finalOutputPath = path.join(
             parentDir,
@@ -73,15 +75,24 @@ program
       info(`Target path: ${requestedPath || '(entire repository)'}`);
       info(`Saving to: ${finalOutputPath}`);
 
-      const spinner = ora('Downloading tarball from GitHub...').start();
-      const { success } = await downloadAndExtractTarball({
+      const isFile =
+        parsed.type === 'blob' ||
+        (requestedPath && !requestedPath.endsWith('/') && !requestedPath.includes('/'));
+
+      const spinner = ora(
+        isFile ? 'Downloading file from GitHub...' : 'Downloading content from GitHub...'
+      ).start();
+
+      const success = await downloadGitHubContent({
         owner: parsed.owner,
         repo: parsed.repo,
         ref: refToUse,
         outDir: finalOutputPath,
-        filterPath: requestedPath,
+        requestedPath,
         token: options.token,
+        isFile,
       });
+
       spinner.succeed('Download and extraction complete! 🎉');
 
       if (!success) {
