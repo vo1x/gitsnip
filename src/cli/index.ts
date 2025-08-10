@@ -17,7 +17,7 @@ export const program = new Command();
 program
   .name('gitsnip')
   .description('Download any file, folder, or whole repo from GitHub—without git')
-  .version('0.5.6', '-v, --version', 'output the current version')
+  .version('1.0.0', '-v, --version', 'output the current version')
   .argument('<repo>', 'GitHub repository (owner/repo or full URL)')
   .argument('[folder]', 'Folder/file path to download (optional if URL includes path)')
   .option('-o, --out <dir>', 'Output directory', './')
