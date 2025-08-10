@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { program } from 'commander';
 import path from 'node:path';
 import { rimraf } from 'rimraf';
@@ -12,7 +14,7 @@ import { askOverwrite } from '../lib/ui.js';
 program
   .name('gitsnip')
   .description('Download any file, folder, or whole repo from GitHub—without git')
-  .version('0.5.1', '-v, --version', 'output the current version')
+  .version('0.5.2', '-v, --version', 'output the current version')
   .argument('<repo>', 'GitHub repository (owner/repo or full URL)')
   .argument('[folder]', 'Folder/file path to download (optional if URL includes path)')
   .option('-o, --out <dir>', 'Output directory', './')
