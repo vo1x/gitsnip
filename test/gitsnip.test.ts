@@ -30,6 +30,11 @@ const tests = [
     expectInOutput: 'INFO  Target path',
   },
   {
+    args: ['vo1x/apple-music-rpc/Appie/', '--force'],
+    shouldSucceed: true,
+    expectInOutput: 'INFO  Target path',
+  },
+  {
     args: ['https://github.com/vo1x/apple-music-rpc/tree/main/Appie/Assets.xcassets', '--force'],
     shouldSucceed: true,
     expectInOutput: 'INFO  Target path',
