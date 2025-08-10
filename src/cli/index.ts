@@ -3,7 +3,7 @@
 import { Command } from 'commander';
 import ora from 'ora';
 import path from 'node:path';
-import * as rimraf from 'rimraf';
+import { rimraf } from 'rimraf';
 
 import { parseGithubUrl } from '../lib/parser.js';
 import { downloadAndExtractTarball } from '../lib/extract.js';
@@ -17,7 +17,7 @@ export const program = new Command();
 program
   .name('gitsnip')
   .description('Download any file, folder, or whole repo from GitHub—without git')
-  .version('0.5.4', '-v, --version', 'output the current version')
+  .version('0.5.5', '-v, --version', 'output the current version')
   .argument('<repo>', 'GitHub repository (owner/repo or full URL)')
   .argument('[folder]', 'Folder/file path to download (optional if URL includes path)')
   .option('-o, --out <dir>', 'Output directory', './')
