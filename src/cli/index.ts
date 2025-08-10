@@ -1,23 +1,18 @@
-#!/usr/bin/env node
-
-import { Command } from 'commander';
-import ora from 'ora';
+import { program } from 'commander';
 import path from 'node:path';
 import { rimraf } from 'rimraf';
 
 import { parseGithubUrl } from '../lib/parser.js';
 import { downloadAndExtractTarball } from '../lib/extract.js';
-import { info, _success, error } from '../lib/logger.js';
+import { info, _success, error, progress, stopSpinner } from '../lib/logger.js';
 import { helpText } from '../constants/help-text.js';
 import { isPathExists, nextAvailableDirName, nextAvailableFileName } from '../lib/naming.js';
 import { askOverwrite } from '../lib/ui.js';
 
-export const program = new Command();
-
 program
   .name('gitsnip')
   .description('Download any file, folder, or whole repo from GitHub—without git')
-  .version('0.5.0', '-v, --version', 'output the current version')
+  .version('0.5.1', '-v, --version', 'output the current version')
   .argument('<repo>', 'GitHub repository (owner/repo or full URL)')
   .argument('[folder]', 'Folder/file path to download (optional if URL includes path)')
   .option('-o, --out <dir>', 'Output directory', './')
@@ -30,7 +25,7 @@ program
       try {
         parsed = parseGithubUrl(repoArg);
       } catch {
-        error('Invalid GitHub repository format. Use: owner/repo or full GitHub URL');
+        error('Invalid GitHub repository format! Use owner/repo or a full GitHub URL.');
         process.exit(1);
       }
 
@@ -54,7 +49,6 @@ program
         if (!overwrite) {
           const parentDir = path.dirname(finalOutputPath);
           const baseName = path.basename(finalOutputPath);
-
           const isFile = parsed.type === 'blob' || (parsed.folder && !parsed.folder.includes('/'));
 
           finalOutputPath = path.join(
@@ -68,12 +62,12 @@ program
         }
       }
 
-      info(`Repository: ${parsed.owner}/${parsed.repo}`);
-      info(`Branch: ${refToUse}`);
-      info(`Path: ${requestedPath || '(entire repository)'}`);
-      info(`Output: ${finalOutputPath}`);
+      info(`Snipping from repository: ${parsed.owner}/${parsed.repo}`);
+      info(`Using branch/commit: ${refToUse}`);
+      info(`Target path: ${requestedPath || '(entire repository)'}`);
+      info(`Saving to: ${finalOutputPath}`);
 
-      const spinner = ora('Downloading tarball from GitHub...').start();
+      progress('Snipping files from GitHub...');
       const { success } = await downloadAndExtractTarball({
         owner: parsed.owner,
         repo: parsed.repo,
@@ -82,16 +76,16 @@ program
         filterPath: requestedPath,
         token: options.token,
       });
-      spinner.succeed('Download and extraction complete! 🎉');
+      stopSpinner();
 
       if (!success) {
-        error('Nothing was extracted. Check your path.');
+        error('No files were snipped! Please check your path and try again.');
         process.exit(1);
       }
 
-      _success(`Done: content saved to "${finalOutputPath}"`);
+      _success(`All done! Files saved to "${finalOutputPath}"`);
     } catch (err) {
-      error(err instanceof Error ? err.message : String(err));
+      error(err instanceof Error ? `Error: ${err.message}` : `Unexpected error: ${String(err)}`);
       process.exit(1);
     }
   });
