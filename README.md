@@ -80,12 +80,9 @@
 
 ## ⚡️ To-Do
 
-- [ ] Add tests
 - [ ] Support downloading symlinks
 - [ ] Support cloning submodules (optionally)
 - [ ] Add archive (zip/tar) output option
-- [ ] Improve error messages for rate-limited or large repos
-- [ ] Add Windows path compatibility checks
 
 ---
 
